@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Математические ошибки, приведшие к катастрофам</title>
+    
+    <!-- Подключаем стили Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        body { margin: 0; padding: 0; font-family: sans-serif; }
+        #map { height: 100vh; width: 100%; } /* Карта на весь экран */
+        .popup-content h3 { margin: 0 0 5px 0; color: #c0392b; }
+        .popup-content p { margin: 5px 0; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <!-- Подключаем библиотеку Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // 1. Инициализируем карту. [20, 0] — это центр мира (координаты)
+        var map = L.map('map').setView([20, 0], 2);
+
+        // 2. Добавляем слой карты (картинку) от OpenStreetMap
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // 3. Создаём функцию для добавления маркера с всплывающим окном
+        function addCatastrophe(lat, lng, title, description) {
+            var marker = L.marker([lat, lng]).addTo(map);
+            marker.bindPopup(`
+                <div class="popup-content">
+                    <h3>${title}</h3>
+                    <p>${description}</p>
+                </div>
+            `);
+        }
+
+        // 4. Добавляем твои точки (координаты найдены в Википедии/картах)
+        
+        // Patriot Missile (Саудовская Аравия, 1991)
+        addCatastrophe(26.4, 50.1, "Patriot Missile (1991)", 
+            "Ошибка округления при переводе времени (0.343 сек) привела к промаху. Погибли 28 человек.");
+
+        // Ariane 5 (Французская Гвиана, 1996)
+        addCatastrophe(5.2, -52.8, "Ariane 5 (1996)", 
+            "Переполнение 64-битного числа при конвертации в 16-битное. Ракета взорвалась через 37 секунд после старта.");
+
+        // Mars Climate Orbiter (Марс, 1999) — *Примечание: на карте Земли он не покажется, но для проекта можно поставить точку в NASA или сделать отдельную метку.*
+        // Для простоты ставим точку в космосе (0,0) или в штаб-квартире NASA.
+        addCatastrophe(28.5, -80.6, "Mars Climate Orbiter (1999)", 
+            "Ошибка в единицах измерения (фунты vs ньютоны). Спутник стоимостью $327 млн сгорел в атмосфере Марса.");
+
+        // Vancouver Stock Exchange (Канада, 1982)
+        addCatastrophe(49.2, -123.1, "Vancouver Stock Exchange (1982)", 
+            "Ошибка усечения (truncation) вместо округления. Индекс упал вдвое за 22 месяца.");
+
+    </script>
+</body>
+</html>
